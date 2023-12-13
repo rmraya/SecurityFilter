@@ -6,7 +6,7 @@ Custom security filter for Tomcat 9 to be used when serving static content
 
 1. Clone this repository
 2. Copy SecurityFilter.jar to Tomcat's `/lib` folder
-3. Edit Tomcat's `conf/web.xml` and add the following lines in Filterss section:
+3. Edit Tomcat's `conf/web.xml` and add the following lines in Filters section:
 
 ```xml
   <filter>
