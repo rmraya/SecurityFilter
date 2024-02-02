@@ -22,6 +22,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class SecurityFilter implements Filter {
@@ -31,6 +32,7 @@ public class SecurityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
         res.addHeader("X-Frame-Options", "SAMEORIGIN");
@@ -44,6 +46,13 @@ public class SecurityFilter implements Filter {
         res.addHeader("Content-Security-Policy", "report-uri https://dev.maxprograms.com");
         res.addHeader("Referrer-Policy", "no-referrer-when-downgrade");
         res.addHeader("Permissions-Policy", "microphone=(), camera=()");
+
+        if (req.getRequestURI().toString().endsWith(".html")) {
+			res.setContentType("text/html");
+		}
+        if (req.getRequestURI().toString().endsWith(".tgz")) {
+			res.setContentType("application/gzip");
+		}
 
         res.setCharacterEncoding(StandardCharsets.UTF_8.name());
         try {
