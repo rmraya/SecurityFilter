@@ -53,7 +53,12 @@ public class SecurityFilter implements Filter {
         if (req.getRequestURI().toString().endsWith(".tgz")) {
 			res.setContentType("application/gzip");
 		}
-
+        if (req.getRequestURI().toString().endsWith(".zip")) {
+			res.setContentType("application/zip");
+		}
+        if (req.getRequestURI().toString().endsWith(".war")) {
+			res.setContentType("application/octet-stream");
+		}
         res.setCharacterEncoding(StandardCharsets.UTF_8.name());
         try {
             chain.doFilter(request, response);
