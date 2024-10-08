@@ -35,30 +35,33 @@ public class SecurityFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
-        res.addHeader("X-Frame-Options", "SAMEORIGIN");
-        res.addHeader("X-XSS-Protection", "1; mode=block");
+        String uri = req.getRequestURI();
+
+
+        if (uri.endsWith(".html") || uri.endsWith(".xml") || uri.endsWith(".com") || uri.endsWith("/") ) {
+            // html and xml only
+            res.addHeader("Content-Security-Policy", "frame-ancestors 'self'; default-src https: data: blob: 'unsafe-inline' 'unsafe-eval';");
+            res.addHeader("X-XSS-Protection", "1; mode=block");
+        } 
         res.addHeader("X-Content-Type-Options", "nosniff");
         res.addHeader("Cache-Control", "no-cache");
-        res.addHeader("Pragma", "no-cache");
-        res.addHeader("Expires", "0");
-        res.addHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+        res.addHeader("Strict-Transport-Security", "max-age=150; includeSubDomains");
         res.addHeader("X-Permitted-Cross-Domain-Policies", "master-only");
-        res.addHeader("Content-Security-Policy", "report-uri https://dev.maxprograms.com");
         res.addHeader("Referrer-Policy", "no-referrer-when-downgrade");
         res.addHeader("Permissions-Policy", "microphone=(), camera=()");
 
-        if (req.getRequestURI().toString().endsWith(".html")) {
-			res.setContentType("text/html");
-		}
-        if (req.getRequestURI().toString().endsWith(".tgz")) {
-			res.setContentType("application/gzip");
-		}
-        if (req.getRequestURI().toString().endsWith(".zip")) {
-			res.setContentType("application/zip");
-		}
-        if (req.getRequestURI().toString().endsWith(".war")) {
-			res.setContentType("application/octet-stream");
-		}
+        if (uri.endsWith(".html")) {
+            res.setContentType("text/html");
+        }
+        if (uri.endsWith(".tgz")) {
+            res.setContentType("application/gzip");
+        }
+        if (uri.endsWith(".zip")) {
+            res.setContentType("application/zip");
+        }
+        if (uri.endsWith(".war")) {
+            res.setContentType("application/octet-stream");
+        }
         res.setCharacterEncoding(StandardCharsets.UTF_8.name());
         try {
             chain.doFilter(request, response);
